@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photonic</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.2.0/lib/p5.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+</head>
+
+<body>
+    <div id="main">
+
+    </div>
+    <button id="settings" class="w3-button w3-gray w3-xlarge w3-text-white w3-round" style="position:absolute;margin-left:945px;"><i class="w3-xxlarge fa fa-cog"></i></button>
+    <canvas id="canvas" width="1008px" height="704px"></canvas>
+    <img src="assets/matches/matchesIdle1.png" id="matchesIdle1" hidden>
+    <img src="assets/matches/matchesIdle2.png" id="matchesIdle2" hidden>
+    <img src="assets/matches/matchesIdle3.png" id="matchesIdle3" hidden>
+    <img src="assets/matches/matchesWalkRight1.png" id="matchesWalkRight1" hidden>
+    <img src="assets/matches/matchesWalkRight2.png" id="matchesWalkRight2" hidden>
+    <img src="assets/matches/matchesWalkRight3.png" id="matchesWalkRight3" hidden>
+    <img src="assets/matches/matchesWalkRight4.png" id="matchesWalkRight4" hidden>
+    <img src="assets/matches/matchesWalkRight5.png" id="matchesWalkRight5" hidden>
+    <img src="assets/matches/matchesWalkRight6.png" id="matchesWalkRight6" hidden>
+    <img src="assets/matches/matchesWalkRight7.png" id="matchesWalkRight7" hidden>
+    <img src="assets/matches/matchesWalkRight8.png" id="matchesWalkRight8" hidden>
+    <img src="assets/torch/torch1.png" id="torch1" hidden>
+    <img src="assets/torch/torch2.png" id="torch2" hidden>
+    <img src="assets/torch/torch3.png" id="torch3" hidden>
+    <img src="assets/blocks/dirt.png" id="dirt" hidden>
+    <img src="assets/blocks/grass.png" id="grass" hidden>
+    <img src="assets/blocks/stone.png" id="stone" hidden>
+    <img src="assets/blocks/wood.png" id="wood" hidden>
+    <img src="assets/blocks/leaves.png" id="leaves" hidden>
+    <img src="assets/blocks/water.png" id="water" hidden>
+    <img src="assets/blocks/sand.png" id="sand" hidden>
+    <img src="assets/icons/food.png" id="food" hidden>
+    <img src="assets/icons/heart.png" id="heart" hidden>
+    <img src="assets/icons/food.png" id="food" hidden>
+    <img src="assets/icons/water.png" id="waterImg" hidden>
+    <img src="assets/icons/heart.png" id="health" hidden>
+    <script src="scripts/state/proxy.js"></script>
+    <script src="scripts/graphics/sprite.js"></script>
+    <script src="scripts/graphics/light.js"></script>
+    <script src="scripts/items/item-entity.js"></script>
+    <script src="scripts/generation/chunk.js"></script>
+    <script src="scripts/items/items.js"></script>
+    <script src="scripts/player.js"></script>
+    <script src="scripts/state/save.js"></script>
+    <script src="scripts/state/load.js"></script>
+    <script src="scripts/scenes.js"></script>
+    <script src="scripts/index.js"></script>
+</body>
+
+</html>

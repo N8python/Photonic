@@ -1,0 +1,28 @@
+#main {
+    text-align: left;
+    position: absolute;
+    max-height: 700px;
+    overflow: scroll;
+}
+
+.courier {
+    font-family: 'Courier Prime', monospace;
+}
+
+.menu-button {
+    font-size: 24px;
+    background-color: grey;
+    color: white;
+    border-radius: 4px;
+}
+
+.menu-button:hover {
+    background-color: lightgrey;
+    color: black;
+    transition: 250ms;
+}
+
+.menu-button:active {
+    background-color: grey;
+    transition: 125ms;
+}
