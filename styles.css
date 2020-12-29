@@ -5,6 +5,15 @@
     overflow: scroll;
 }
 
+#main {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#main::-webkit-scrollbar {
+    display: none;
+}
+
 .courier {
     font-family: 'Courier Prime', monospace;
 }

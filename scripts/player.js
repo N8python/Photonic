@@ -173,12 +173,12 @@ const player = {
                 }
             }
         }
-        oldInventorySelected = this.inventorySelected
-            /*ctx.fillStyle = "red";
-            ctx.fillRect(this.x * 16 - 16, this.y * 16 - 16, 5, 5);
-            ctx.fillRect(this.x * 16 + 16, this.y * 16 - 16, 5, 5);
-            ctx.fillRect(this.x * 16 + 16, this.y * 16 + 16, 5, 5);
-            ctx.fillRect(this.x * 16 - 16, this.y * 16 + 16, 5, 5);*/
+        oldInventorySelected = this.inventorySelected;
+        /*ctx.fillStyle = "red";
+        ctx.fillRect(this.x * 16 - 16, this.y * 16 - 16, 5, 5);
+        ctx.fillRect(this.x * 16 + 16, this.y * 16 - 16, 5, 5);
+        ctx.fillRect(this.x * 16 + 16, this.y * 16 + 16, 5, 5);
+        ctx.fillRect(this.x * 16 - 16, this.y * 16 + 16, 5, 5);*/
     },
     move() {
         let speed = 0.1;
@@ -194,7 +194,7 @@ const player = {
         if (this.food === 0) {
             speed = 0.0375;
         }
-        if (keysPressed["ArrowRight"]) {
+        if (keysPressed["ArrowRight"] || keysPressed["d"] || keysPressed["D"]) {
             this.orientation = "right";
             if (passables.includes(blockAt(Math.floor(this.x) + 1, Math.floor(this.y) - 1)) && passables.includes(blockAt(Math.floor(this.x) + 1, Math.floor(this.y) + 1)) && passables.includes(blockAt(Math.floor(this.x) + 1, Math.floor(this.y)))) {
                 this.x += speed;
@@ -204,7 +204,7 @@ const player = {
                 this.exhaustion += 2;
             }
             this.sprite.playAnimation("walkRight");
-        } else if (keysPressed["ArrowLeft"]) {
+        } else if (keysPressed["ArrowLeft"] || keysPressed["a"] || keysPressed["A"]) {
             this.orientation = "left";
             if (passables.includes(blockAt(Math.floor(this.x) - 1, Math.floor(this.y) - 1)) && passables.includes(blockAt(Math.floor(this.x) - 1, Math.floor(this.y) + 1)) && passables.includes(blockAt(Math.floor(this.x) - 1, Math.floor(this.y)))) {
                 this.x -= speed;
@@ -217,7 +217,7 @@ const player = {
         } else {
             this.sprite.playAnimation("idle");
         }
-        if (keysPressed["ArrowUp"]) {
+        if (keysPressed["ArrowUp"] || keysPressed["w"] || keysPressed["W"]) {
             if (passables.includes(blockAt(Math.floor(this.x - 1), Math.floor(this.y - 1))) && passables.includes(blockAt(Math.floor(this.x) + 1, Math.floor(this.y - 1))) && passables.includes(blockAt(Math.floor(this.x), Math.floor(this.y - 1)))) {
                 this.y -= speed;
                 this.exhaustion += 2;
@@ -225,7 +225,7 @@ const player = {
                 this.y -= speed;
                 this.exhaustion += 2;
             }
-        } else if (keysPressed["ArrowDown"]) {
+        } else if (keysPressed["ArrowDown"] || keysPressed["s"] || keysPressed["S"]) {
             if (passables.includes(blockAt(Math.floor(this.x) - 1, Math.floor(this.y) + 1)) && passables.includes(blockAt(Math.floor(this.x) + 1, Math.floor(this.y) + 1)) && passables.includes(blockAt(Math.floor(this.x), Math.floor(this.y + 1)))) {
                 this.y += speed;
                 this.exhaustion += 2;
@@ -234,7 +234,7 @@ const player = {
                 this.exhaustion += 2;
             }
         }
-        if (!Number.isInteger(this.x) && !keysPressed["ArrowRight"] && !keysPressed["ArrowLeft"]) {
+        if (!Number.isInteger(this.x) && !keysPressed["ArrowRight"] && !keysPressed["ArrowLeft"] && !keysPressed["a"] && !keysPressed["A"] && !keysPressed["d"] && !keysPressed["D"]) {
             if (this.x - Math.floor(this.x) < 0.5) {
                 this.x -= speed;
                 this.exhaustion += 2;
@@ -244,7 +244,7 @@ const player = {
             }
             this.x = Math.round(this.x * (1 / speed)) / (1 / speed);
         }
-        if (!Number.isInteger(this.y) && !keysPressed["ArrowUp"] && !keysPressed["ArrowDown"]) {
+        if (!Number.isInteger(this.y) && !keysPressed["ArrowUp"] && !keysPressed["ArrowDown"] && !keysPressed["w"] && !keysPressed["W"] && !keysPressed["s"] && !keysPressed["S"]) {
             if (this.y - Math.floor(this.y) < 0.5) {
                 this.y -= speed;
                 this.exhaustion += 2;
