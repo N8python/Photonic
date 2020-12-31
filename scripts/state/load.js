@@ -40,6 +40,19 @@ const loadState = (state) => {
         if (entity.kind === "ItemEntity") {
             return ItemEntity.fromJSON(entity);
         }
+    });
+    state.crafting.map((item) => {
+        if (item === null) {
+            return undefined;
+        }
+        return {
+            item: stringToItem[item.item],
+            amount: item.amount
+        }
+    }).forEach(item => {
+        if (item) {
+            player.placeInInventory(item.item, item.amount);
+        }
     })
     player.createSource();
     seed = state.seed;

@@ -58,7 +58,7 @@ const player = {
     placeInInventory(sprite, amount = 1) {
         for (let a = 0; a < amount; a++) {
             let itemIndex = this.inventory.findIndex((item) => item !== undefined && item.item === sprite && item.amount < 99);
-            if (itemIndex >= 0) {
+            if (itemIndex >= 0 && !unstackables.includes(sprite)) {
                 this.inventory[itemIndex].amount++;
             } else {
                 let freeIndex = 0;
@@ -69,6 +69,13 @@ const player = {
                     }
                 }
                 if (freeIndex === 0) {
+                    entities.push(ItemEntity({
+                        sprite: sprite,
+                        amount: amount - a,
+                        x: player.x + (4 * Math.sign(Math.random() - 0.5)),
+                        y: player.y + (4 * Math.sign(Math.random() - 0.5)),
+                        thrownOut: true
+                    }))
                     return false;
                 } else {
                     this.inventory[freeIndex] = { item: sprite, amount: 1 };
@@ -133,18 +140,29 @@ const player = {
         if (this.item) {
             this.item.playAnimation("idle");
             ctx.save();
-            ctx.translate((this.x * 16) + (this.orientation === "left" ? -32 : 12) + this.item.width, (this.y * 16) - 8 + this.item.height);
+            ctx.translate((this.x * 16) + (this.orientation === "left" ? -32 : 0) + this.item.width, (this.y * 16) - 8 + this.item.height);
             if (selectedTile && selectedTile.breakProgress > 0) {
                 this.exhaustion += 5;
                 if (this.orientation === "left") {
                     ctx.rotate(-Math.PI / 6 + (Math.PI / 6 * Math.sin(tick / 5)))
                 } else if (this.orientation === "right") {
-                    ctx.scale(-1, 1);
-                    ctx.translate(12, 0);
-                    ctx.rotate(-Math.PI / 6 + (Math.PI / 6 * Math.sin(tick / 5)));
+                    //ctx.translate(-44, 0);
+                    ctx.rotate(Math.PI / 6 - (Math.PI / 6 * Math.sin(tick / 5)));
+                    //ctx.scale(-1, 1);
+                    //ctx.translate(44, 0);
+                    //ctx.scale(-1, 1);
+                    //ctx.rotate(-Math.PI / 6 + (Math.PI / 6 * Math.sin(tick / 5)))
+
+                    //ctx.rotate(Math.PI / 6 - (Math.PI / 6 * Math.sin(tick / 5)))
                 }
             }
-            this.item.draw(-this.item.width, -this.item.height, blockItems.includes(this.item) ? 16 : 20, blockItems.includes(this.item) ? 16 : 20);
+            if (this.orientation === "left") {
+                ctx.scale(-1, 1);
+            }
+            if (this.orientation === "right") {
+                //ctx.translate(-12, 0);
+            }
+            this.item.draw(-this.item.width + 12, -this.item.height, blockItems.includes(this.item) ? 16 : 20, blockItems.includes(this.item) ? 16 : 20);
             ctx.restore();
             const xTarget = (this.orientation === "left" ? -2 : 1)
             if (!this.source) {

@@ -126,6 +126,8 @@ const statIcons = {
     food: document.getElementById("food"),
     water: document.getElementById("waterImg")
 }
+const craftingArrow = document.getElementById("craftingArrow");
+let crafting = Array(6);
 const statColors = {
     health: "rgb(255, 0, 0)",
     food: "rgb(255, 0, 255)",
@@ -159,6 +161,36 @@ const gameInterval = setInterval(() => {
             ctx.strokeRect(6.5, 2.5 + 75 + 24 * i, 24, 24);
             //}
         }
+        for (let i = 0; i < 6; i++) {
+            ctx.strokeStyle = "white";
+            ctx.strokeRect(6.5 + 24, 2.5 + 75 + 24 * i, 24, 24);
+        }
+        for (let i = 0; i < 6; i++) {
+            ctx.strokeStyle = "white";
+            if (crafting[i] && crafting[i].item) {
+                crafting[i].item.draw(6.5 + 24, 2.5 + 75 + 24 * i, 24, 24);
+                if (crafting[i].amount > 1) {
+                    ctx.font = "12px monospace";
+                    ctx.fillStyle = "white";
+                    ctx.fillText(crafting[i].amount, 6.5 + 24 + 15 - (crafting[i].amount > 9 ? 7 : 0), 2.5 + 75 + 24 * i + 21);
+                }
+            }
+            //if (i === player.inventorySelected) {
+            //} else {
+            ctx.strokeRect(6.5, 2.5 + 75 + 24 * i, 24, 24);
+            //}
+        }
+        ctx.drawImage(craftingArrow, 6.5 + 24 + 4, 2.5 + 75 + 24 * 6 + 4, 16, 16);
+        ctx.strokeRect(6.5 + 24, 2.5 + 75 + 24 * 7, 24, 24);
+        const recipe = findRecipeMatch();
+        if (recipe) {
+            recipe[1][0].draw(6.5 + 24, 2.5 + 75 + 24 * 7, 24, 24);
+            if (recipe[1][1] > 1) {
+                ctx.font = "12px monospace";
+                ctx.fillStyle = "white";
+                ctx.fillText(recipe[1][1], 6.5 + 24 + 15 - (recipe[1][1] > 9 ? 7 : 0), 2.5 + 75 + 24 * 7 + 21);
+            }
+        }
         ctx.lineWidth = 3;
         ctx.strokeRect(6.5 + 0.75, 2.5 + 75 + 24 * (player.inventorySelected) + 1.5, 24 - 1.5, 24 - 1.5);
         ctx.lineWidth = 1;
@@ -185,14 +217,40 @@ const gameInterval = setInterval(() => {
                 if (player.water === 0) {
                     breakSpeed /= 2;
                 }
+                if (toolBoost[itemToString(player.item)]) {
+                    breakSpeed *= toolBoost[itemToString(player.item)].amount;
+                }
                 selectedTile.breakProgress += breakSpeed;
                 //} else if (selectedTile.breakProgress =)
                 if (selectedTile.breakProgress >= 1) {
-                    entities.push(ItemEntity({
-                        sprite: blockItems[blockAt(selectedTile.x, selectedTile.y)],
-                        x: selectedTile.x,
-                        y: selectedTile.y
-                    }));
+                    const blockVal = blockAt(selectedTile.x, selectedTile.y);
+                    if (blockBreakMap[blockVal]) {
+                        blockBreakMap[blockVal].forEach(breakMap => {
+                            if (breakMap.length === 2) {
+                                if (Math.random() < breakMap[0]) {
+                                    entities.push(ItemEntity({
+                                        sprite: breakMap[1],
+                                        x: selectedTile.x,
+                                        y: selectedTile.y
+                                    }));
+                                }
+                            } else if (breakMap.length === 3) {
+                                const amount = Math.floor(random.random(breakMap[0], breakMap[1] + 1));
+                                entities.push(ItemEntity({
+                                    sprite: breakMap[2],
+                                    x: selectedTile.x,
+                                    y: selectedTile.y,
+                                    amount
+                                }));
+                            }
+                        })
+                    } else {
+                        entities.push(ItemEntity({
+                            sprite: blockItems[blockVal],
+                            x: selectedTile.x,
+                            y: selectedTile.y
+                        }));
+                    }
                     setBlock(selectedTile.x, selectedTile.y, 0);
                     selectedTile = undefined;
                 }
@@ -264,7 +322,71 @@ canvas.addEventListener("mousedown", (e) => {
     const { x: mouseX, y: mouseY } = pureMousePos(canvas, e);
     for (let i = 0; i < 16; i++) {
         if (mouseX > 6.5 && mouseX < 6.5 + 24 && mouseY > (2.5 + 75 + 24 * i) && mouseY < (2.5 + 75 + 24 * i) + 24) {
-            player.inventorySelected = i;
+            if (e.button === 2) {
+                const item = player.inventory[player.inventorySelected];
+                if (item.item !== torch) {
+                    if (!player.inventory[i]) {
+                        player.inventory[i] = { item: item.item, amount: 1 };
+                        item.amount--;
+                    } else if (item.item === player.inventory[i].item && !unstackables.includes(item.item)) {
+                        player.inventory[i].amount++;
+                        item.amount--;
+                    }
+                    if (item.amount === 0) {
+                        player.inventory[player.inventorySelected] = undefined;
+                    }
+                }
+            } else {
+                player.inventorySelected = i;
+            }
+        }
+    }
+    for (let i = 0; i < 6; i++) {
+        if (mouseX > 6.5 + 24 && mouseX < 6.5 + 48 && mouseY > (2.5 + 75 + 24 * i) && mouseY < (2.5 + 75 + 24 * i) + 24) {
+            if (e.button !== 2) {
+                if (crafting[i]) {
+                    player.placeInInventory(crafting[i].item, crafting[i].amount);
+                    crafting[i] = undefined;
+                }
+            } else {
+                const item = player.inventory[player.inventorySelected];
+                if (item.item !== torch) {
+                    if (!crafting[i]) {
+                        crafting[i] = { item: item.item, amount: 1 };
+                        item.amount--;
+                    } else if (crafting[i].item === item.item && !unstackables.includes(item.item)) {
+                        crafting[i].amount++;
+                        item.amount--;
+                    }
+                    if (item.amount === 0) {
+                        player.inventory[player.inventorySelected] = undefined;
+                    }
+                }
+            }
+        }
+    }
+    if (mouseX > 6.5 + 24 && mouseX < 6.5 + 48 && mouseY > (2.5 + 75 + 24 * 7) && mouseY < (2.5 + 75 + 24 * 7) + 24) {
+        const recipe = findRecipeMatch();
+        if (recipe) {
+            player.placeInInventory(recipe[1][0], recipe[1][1]);
+            recipe[0].forEach(([item, amount]) => {
+                for (let i = 0; i < 6; i++) {
+                    const craftItem = crafting[i];
+                    if (craftItem && craftItem.item === item) {
+                        craftItem.amount -= amount;
+                        if (craftItem.amount < 0) {
+                            amount += -craftItem.amount;
+                            craftItem.amount = 0;
+                        }
+                    }
+                    if (amount <= 0) {
+                        break;
+                    }
+                    if (craftItem && craftItem.amount === 0) {
+                        crafting[i] = undefined;
+                    }
+                }
+            })
         }
     }
     if (e.button === 2) {
@@ -277,8 +399,12 @@ canvas.addEventListener("mousedown", (e) => {
             }
         }
     }
-
 });
+window.addEventListener("unload", () => {
+    crafting.forEach(c => {
+        player.placeInInventory(c.item, c.amount);
+    });
+})
 canvas.addEventListener("contextmenu", (e) => {
     e.preventDefault();
     return false;
@@ -312,7 +438,6 @@ canvas.addEventListener("mousemove", (e) => {
                     break;
                 }
                 pathfindTick++;
-                //console.log(startX, startY);
             }
             selectedTile = {
                 x: startX,

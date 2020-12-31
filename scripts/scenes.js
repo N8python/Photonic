@@ -163,6 +163,12 @@ const inGameSettings = () => {
     exitButton.classList.add("courier", "menu-button");
     exitButton.innerHTML = "Exit";
     exitButton.onclick = () => {
+        crafting.forEach(c => {
+            if (c && c.item) {
+                player.placeInInventory(c.item, c.amount);
+            }
+        });
+        crafting = Array(6);
         paused = false;
         saveGame(levelStorageIndex);
         levelStorageIndex = undefined;

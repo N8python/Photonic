@@ -61,7 +61,7 @@ function ItemEntity({
                 angle,
                 xOffset,
                 yOffset,
-                block: blockItems.indexOf(sprite),
+                block: blockItems.includes(sprite) ? blockItems.indexOf(sprite) : itemToString(sprite),
                 amount,
                 kind: "ItemEntity"
             }
@@ -72,7 +72,7 @@ ItemEntity.fromJSON = ({ x, y, angle, xOffset, yOffset, block, amount }) => {
     return ItemEntity({
         x,
         y,
-        sprite: blockItems[block],
+        sprite: Number.isInteger(block) ? blockItems[block] : stringToItem[block],
         angle: angle,
         amount,
         xOffset: xOffset,

@@ -8,6 +8,16 @@ const gameState = () => {
     return {
         chunks: chunks.map(chunk => chunk.toJSON()),
         player: player.toJSON(),
+        crafting: crafting.map((item) => {
+            if (item === undefined) {
+                return null;
+            } else {
+                return {
+                    item: itemToString(item.item),
+                    amount: item.amount
+                }
+            }
+        }),
         entities: entities.map(entity => entity.toJSON()),
         seed
     }
