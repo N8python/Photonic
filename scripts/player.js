@@ -110,6 +110,18 @@ const player = {
         }
         this.item = this.inventory[this.inventorySelected].item;
         this.exhaustion += 1;
+        if (this.health < this.maxHealth && this.food > 75 && this.water > 50) {
+            let healthChance = 10;
+            healthChance -= (100 - this.food) / 5;
+            healthChance -= (100 - this.water) / 10;
+            if (Math.random() <= healthChance / 100) {
+                this.health += 1;
+                this.exhaustion += 200;
+                if (Math.random() < 0.25) {
+                    this.food -= 1;
+                }
+            }
+        }
         if (this.exhaustion > 5000) {
             let seed = Math.random();
             if (seed < 0.75 && this.water > 0) {
@@ -156,13 +168,35 @@ const player = {
                     //ctx.rotate(Math.PI / 6 - (Math.PI / 6 * Math.sin(tick / 5)))
                 }
             }
+            if (eatingTick > 0) {
+                this.exhaustion += 1;
+                ctx.translate(0, Math.sin(eatingTick / 3) * 2);
+            }
+            if (eatingTick > 60) {
+                this.exhaustion += edibleAmount[itemToString(this.item)].exhaustion;
+                this.food += edibleAmount[itemToString(this.item)].food;
+                this.water += edibleAmount[itemToString(this.item)].water;
+                this.food = Math.min(this.food, this.maxFood);
+                this.water = Math.min(this.water, this.maxWater);
+                this.exhaustion = Math.max(this.exhaustion, 0);
+                eatingTick = 0;
+                this.inventory[this.inventorySelected].amount -= 1;
+                if (this.inventory[this.inventorySelected].amount === 0) {
+                    this.inventory[this.inventorySelected] = undefined;
+                    this.inventorySelected = 0;
+                }
+            }
             if (this.orientation === "left") {
                 ctx.scale(-1, 1);
             }
             if (this.orientation === "right") {
                 //ctx.translate(-12, 0);
             }
+            if (eatingTick > 0) {
+                ctx.globalAlpha = 1 - (eatingTick / 60);
+            }
             this.item.draw(-this.item.width + 12, -this.item.height, blockItems.includes(this.item) ? 16 : 20, blockItems.includes(this.item) ? 16 : 20);
+            ctx.globalAlpha = 1;
             ctx.restore();
             const xTarget = (this.orientation === "left" ? -2 : 1)
             if (!this.source) {

@@ -74,6 +74,7 @@ let chunks = [];
 let lights = [];
 let entities = [];
 let selectedTile = undefined;
+let eatingTick = 0;
 /*function setup() {
     createCanvas(0, 0);
     randomSeed(seed);
@@ -287,6 +288,9 @@ const gameInterval = setInterval(() => {
         tick++;
         if (tick % 30 === 0) {
             saveGame(levelStorageIndex);
+        }
+        if (!keysPressed["e"]) {
+            eatingTick = 0;
         }
         settings.style.display = "block";
     } else {
@@ -507,6 +511,15 @@ document.addEventListener("keydown", (e) => {
             }))
             player.inventory[player.inventorySelected] = undefined;
         }
+    }
+    if (e.key.toLowerCase() === "e") {
+        if (edibles.includes(player.item)) {
+            eatingTick += 1;
+        } else {
+            eatingTick = 0;
+        }
+    } else {
+        eatingTick = 0;
     }
 });
 document.addEventListener("keyup", (e) => {

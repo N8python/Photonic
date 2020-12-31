@@ -165,6 +165,14 @@ const toolBoost = {
     }
 }
 const unstackables = [handaxe, torch];
+const edibles = [apple];
+const edibleAmount = {
+    "Apple": {
+        exhaustion: -500,
+        food: 5,
+        water: 5
+    }
+}
 const reduceCraftingInventory = () => {
     const inv = [];
     for (let i = 0; i < 6; i++) {
